@@ -1,0 +1,30 @@
+---
+title: "Prueba"
+output:
+  pdf_document: default
+  html_document: default
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+```{r warning=FALSE}
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+db <- read_excel("Sample - Superstore.xls", sheet = "Orders")
+```
+
+```{r}
+ggplot(db, aes(x = Sales, y = Profit)) + 
+  geom_point(aes(color = as.factor(Discount)), size = 3, alpha = 0.6) + 
+  geom_hline(yintercept = 0, linetype = "dashed", color = "black") + 
+  scale_color_viridis_d(option = "plasma", name="Discount") +
+  theme_minimal()
+```
+Como podemos observar en la gráfica los descuentos sobre el > 0.4~ (40%) de la venta crea una perdida a la tienda
+Por lo cual podríamos decir que el profit de la tienda por producto que vende es aproximadamente de 0.3~ (30%)
+
+Podemos decir que el descuento afecta de manera "directa" a la ganancia de la tienda, llegando a un punto que el descuento siempre generara perdida para la tienda.
+Deduzco por la gráfica que la tienda maneja un margen de ganancia por producto aproximadamente del 0.3 (30%)~ por lo cual aplicar cualquier descuento sobre esto genera una perdida aumentando de manera casi "directa" (ya que esto no es lineal) pero tiende a este tipo de gráficas

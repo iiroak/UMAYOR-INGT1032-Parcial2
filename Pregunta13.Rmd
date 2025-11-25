@@ -1,0 +1,40 @@
+---
+title: "Prueba"
+output:
+  pdf_document: default
+  html_document: default
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+```{r warning=FALSE}
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+library(plotly)
+db <- read_excel("Sample - Superstore.xls", sheet = "Orders")
+```
+
+```{r}
+db_trismestral <- db %>%
+  mutate(
+    date = as.Date(`Order Date`), # trabajamos la fecha como un Date de R
+    year = year(date),
+    tris = quarter(date)
+  ) %>%
+  group_by(year, tris) %>%
+  summarise(total = sum(Sales), .groups = 'drop')
+
+ggplot(db_trismestral) +
+  aes(x = tris, y = total, colour = year, group = year) +
+  geom_line(linewidth = 1.15) +
+  scale_color_distiller(palette = "BrBG", direction = 1) +
+  theme_minimal()
+```
+Podemos apreciar que el año 2014 y 2015 las ganancias fueron casi iguales respecto a cada trimestre El año
+2016 comenzó con ganancias mas altas que los años anterior, pero cayendo a las de los años anteriores en el T3,
+pero terminando el T4 con ganancias mucho mayores a los años anteriores El año 2017 comenzó con ganancias
+mas altas pero llegando T2 a igualar respecto al año pasado, luego de esto las ganancias han sido superadas
+respecto al año anterior Puedo concluir del gráfico que el año 2016, 2017 la empresa a mejorado su ganancias,
+respecto a los 2 años anteriores. Indicando probablemente nuevas forma de administración/marketing/etc.

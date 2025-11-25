@@ -1,0 +1,74 @@
+---
+title: "Prueba"
+output:
+  pdf_document: default
+  html_document: default
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+La base de datos Sample - Superstore.xls contiene detalles de las
+ordenes de los compradores de una cadena de supermercados en Estados
+Unidos. Esta incluye estado, región, fecha de orden, fecha de despacho,
+etc. Realice un análisis exploratorio simple de las variables category,
+sub-category y discount.
+
+```{r warning=FALSE}
+library(readxl)
+library(tidyverse)
+library(ggplot2)
+db <- read_excel("Sample - Superstore.xls", sheet = "Orders")
+db_analis <- db |> 
+  select("Category", "Sub-Category", "Discount")
+```
+```{r}
+print(summary(db_analis))
+print(table(db_analis$Category))
+print(table(db_analis$`Sub-Category`))
+print(table(db_analis$Discount))
+```
+
+```{r}
+ggplot(db_analis) +
+  aes(x = Discount) +
+  geom_histogram(bins = 30L, fill = "#440154") +
+  theme_minimal()
+
+```
+
+Podemos observar que contamos con 2 variables de tipo "character" y una
+numérica llamada "Discount".
+
+En la gráfica podemos observar que los descuentos más frecuentes en las ordenes son de 0.2 que se puede traducir a 20% (Ignorando 0.0 que representa que la orden no tiene ningun descuento)
+
+```{r}
+ggplot(db_analis) +
+ aes(x = Category) +
+ geom_bar(fill = "#440154") +
+ theme_minimal()
+```
+
+Al graficar la tabla `Category` podemos ver que la mayoria de Ordenes
+son de tipo "Office Supplies"
+
+```{r}
+ggplot(db_analis) +
+  aes(x = `Sub-Category`, fill = Category) +
+  geom_bar() +
+  scale_fill_manual(
+    values = c(Furniture = "#5B064E",
+    `Office Supplies` = "#CA12AE",
+    Technology = "#CB7DBF")
+  ) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+```
+
+En las categorias podemos observar las sub-categorias de las categorias mas solicitadas son:
+
+| Category | Sub Category |
+|----------|--------------|
+|Furniture | Firnishings  |
+|Office Supplies | Binders|
+|Technology      | Phones |
